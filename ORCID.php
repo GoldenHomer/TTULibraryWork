@@ -18,21 +18,21 @@
   
   curl_setopt_array($curl, array(
     CURLOPT_RETURNTRANSFER => true,
-	  CURLOPT_SSL_VERIFYPEER => false,
-	  CURLOPT_URL => 'https://sandbox.orcid.org/oauth/token',
+    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_URL => 'https://sandbox.orcid.org/oauth/token',
     CURLOPT_POST => true,
-	  CURLOPT_POSTFIELDS => $postString,
-	  CURLOPT_HTTPHEADER => 'accept: application/json'
+    CURLOPT_POSTFIELDS => $postString,
+    CURLOPT_HTTPHEADER => 'accept: application/json'
   ));
   
   $response = curl_exec($curl);
   
   // Error handling (check PHP error log). Check php.net/manual/en/function.curl-errno.php for error code
   if(!$response) 
-	  die('Error: "'.curl_error($curl).'" - Code: '.curl_errno($curl));
+    die('Error: "'.curl_error($curl).'" - Code: '.curl_errno($curl));
   else {
-	$json = json_decode($response, true); // true is to return a json string, not an object (which is the default).
-	$token = $json["access_token"];
+    $json = json_decode($response, true); // true is to return a json string, not an object (which is the default).
+    $token = $json["access_token"];
 	
   }
   // ORCID sandbox test account: USERNAME: orcidtest@mailinator.com, PW: orcidtest1
@@ -42,35 +42,36 @@
   /*********** BEGIN QUERYING OF ORCIDs ASSOCIATED WITH UT ************/
   
   $headers = array (
-	  'Method: GET',
-	  'Content-type: application/vnd.orcid+json',
-	  'Authorization type: Bearer',
-	  'Access token: '. $token
+    'Method: GET',
+    'Content-type: application/vnd.orcid+json',
+    'Authorization type: Bearer',
+    'Access token: '. $token
   );
   
   $queryCurl = curl_init();
   
   curl_setopt_array($queryCurl, array (
     CURLOPT_RETURNTRANSFER => true,
-	  CURLOPT_HTTPHEADER => $headers,
-	  CURLOPT_SSL_VERIFYPEER => false
+    CURLOPT_HTTPHEADER => $headers,
+    CURLOPT_SSL_VERIFYPEER => false
   ));
   
   
   $arrayOfOrcidIDs = array();
   // increment through all records since ORCID API only shows up to 200 records for each query.
   for($start = 2600; $start < 2700; $start += 200){
-	// Search by keywords. Returns 1172 results as of 11/15/2017;
-	$query = "/search/?q=affiliation-org-name:(%22University%20of%20Texas%20at%20Austin%22)&start=" . $start . "&rows=200";
+    // Search by keywords. Returns 1172 results as of 11/15/2017;
+    $query = "/search/?q=affiliation-org-name:(%22University%20of%20Texas%20at%20Austin%22)&start=" . $start . "&rows=200";
 	
-	curl_setopt($queryCurl, CURLOPT_URL, "https://pub.orcid.org/v2.0" . $query); // won't work with member API (api.orcid.org)- was told library had a paid membership with ORCID.
+    curl_setopt($queryCurl, CURLOPT_URL, "https://pub.orcid.org/v2.0" . $query); // won't work with member API (api.orcid.org)- was told library had a paid membership with ORCID.
 	
-	$queryResponse = curl_exec($queryCurl);
+    $queryResponse = curl_exec($queryCurl);
 	
-	$jsonQuery = json_decode($queryResponse, true);
-	$orcidNum = count($jsonQuery['result']);
-	$i = 0;
-	// put all ORCID ids in an array
+    $jsonQuery = json_decode($queryResponse, true);
+    $orcidNum = count($jsonQuery['result']);
+    $i = 0;
+	  
+    // put all ORCID ids in an array
     while($i < $orcidNum) {
       $orcidID = $jsonQuery['result'][$i]['orcid-identifier']['path'];
       array_push($arrayOfOrcidIDs, $orcidID);
@@ -84,8 +85,8 @@
   
   while ($i < count($arrayOfOrcidIDs) ) {
     $query = "https://pub.orcid.org/v2.0/".$arrayOfOrcidIDs[$i]."/record";
-	  array_push($arrayOfURLs, $query);
-	  $i += 1;
+    array_push($arrayOfURLs, $query);
+    $i += 1;
   }
 /*********** BEGIN 2nd QUERYING OF ORCID API W/ ORCID URLs TO GET SPECIFIC DETAILS ABOUT EACH ORCID ************/
   echo("Number of unique API URLs: ".count($arrayOfURLs)."\n");
@@ -114,7 +115,7 @@
   $active = NULL;
 
   do {
-	  curl_multi_exec($multiCurl, $active);
+    curl_multi_exec($multiCurl, $active);
   }
   while ($active > 0);
 
@@ -147,21 +148,21 @@
   $connectInfo = array("Database"=>"", "UID"=>"", "PWD"=>"");
   $conn = sqlsrv_connect($serverName, $connectInfo);
   if(!$conn) 
-	error_log("Couldn't connect to ORCID database in curlUT.PHP file.\r\n");
+    error_log("Couldn't connect to ORCID database in curlUT.PHP file.\r\n");
   
   for($i = 0; $i < count($results); $i++) {
-	  $jsonRecord = json_decode($results[$i], true);
-	  // reset variables for each ORCID record
-	  $empName = "";
-	  $empStartYear = "";
-	  $empEndYear = "";
-	  $titleName = "";
-	  $empDepartName = "";
-    
-	  //EMPLOYMENT INFO
-	  // only want TTU info and some records have info related to other schools and jobs
-	  for($j = 0; $j < 6; $j++){
-	    $empName = $jsonRecord['activities-summary']['employments']['employment-summary'][$j]['organization']['name'];
+    $jsonRecord = json_decode($results[$i], true);
+    // reset variables for each ORCID record
+    $empName = "";
+    $empStartYear = "";
+    $empEndYear = "";
+    $titleName = "";
+    $empDepartName = "";
+
+    //EMPLOYMENT INFO
+    // only want TTU info and some records have info related to other schools and jobs
+    for($j = 0; $j < 6; $j++){
+      $empName = $jsonRecord['activities-summary']['employments']['employment-summary'][$j]['organization']['name'];
       // if API returns Texas Tech as employer name at some index, get associated info at that index
       if(strpos($empName, 'University of Texas at Austin') !== false){
           $empStartYear = $jsonRecord['activities-summary']['employments']['employment-summary'][$j]['start-date']['year']['value'];
@@ -169,37 +170,37 @@
           $titleName = $jsonRecord['activities-summary']['employments']['employment-summary'][$j]['role-title'];
           $empDepartName = $jsonRecord['activities-summary']['employments']['employment-summary'][$j]['department-name'];
       }
-	  }
+    }
     
-	  if(empty($empDepartName) and empty($titleName) and empty($empStartYear) and empty($empEndYear)){
+    if(empty($empDepartName) and empty($titleName) and empty($empStartYear) and empty($empEndYear)){
       $fullEmployInfo = "No info entered or non-UT employment";
       $empStatus = "Never employed by UT";
     }
-	  elseif(empty($empStartYear) and empty($empEndYear)){
+    elseif(empty($empStartYear) and empty($empEndYear)){
       $fullEmployInfo = (empty($empDepartName) ? 'No department name entered' : $empDepartName).'---'.(empty($titleName) ? 'No role title entered' : $titleName);
       $empStatus = "Dates not entered";
-	  }
-	  else {
+    }
+    else {
       $fullEmployInfo = (empty($empDepartName) ? 'No department name entered' : $empDepartName).'---'.(empty($titleName) ? 'No role title entered' : $titleName).'---'.((empty($empStartYear) ? 'No start year entered' : $empStartYear)).'-'.(empty($empEndYear) ? 'Present' : $empEndYear);
       // some ORCID records have a single quote in them and messes up the SQL query below
       $fullEmployInfo = str_replace("'", "", $fullEmployInfo);
       
-      if((strpos($fullEmployInfo, 'Present') !== false))
+      if( (strpos($fullEmployInfo, 'Present') !== false) )
         $empStatus = 'Current Employee';
       else 
         $empStatus = 'Past Employee';
-	  }
+    }
 	  
-	  // EDUCATION INFO
-	  // same idea here as employment
-	  $schoolName = "";
-	  $startYear = "";
-	  $endYear = "";
-	  $degree = "";
-	  $departName = "";
-	  
-	  for($j = 0; $j < 7; $j++){
-	    $schoolName = $jsonRecord['activities-summary']['educations']['education-summary'][$j]['organization']['name'];
+    // EDUCATION INFO
+    // same idea here as employment
+    $schoolName = "";
+    $startYear = "";
+    $endYear = "";
+    $degree = "";
+    $departName = "";
+
+    for($j = 0; $j < 7; $j++){
+      $schoolName = $jsonRecord['activities-summary']['educations']['education-summary'][$j]['organization']['name'];
 		
       if(strpos($schoolName, 'University of Texas at Austin') !== false){
         $startYear = $jsonRecord['activities-summary']['educations']['education-summary'][$j]['start-date']['year']['value'];
@@ -207,40 +208,42 @@
         $degree = str_replace("'", "", $jsonRecord['activities-summary']['educations']['education-summary'][$j]['role-title']);
         $departName = $jsonRecord['activities-summary']['educations']['education-summary'][$j]['department-name'];
       }
-	  }
+    }
 	  
-	  if(empty($departName) and empty($degree) and empty($startYear) and empty($endYear)){
+    if(empty($departName) and empty($degree) and empty($startYear) and empty($endYear)){
       $fullEduInfo = "No info entered or non-UT education";
       $eduStatus = "Never attended UT";
-	  }
-	  elseif(empty($startYear) and empty($endYear)){
-      $fullEduInfo = (empty($departName) ? 'No department name entered' : $departName).'---'.(empty($degree) ? 'No degree info entered' : $degree);
-      $eduStatus = "Dates not entered";
-	  }
-	  else {
+    }
+    elseif(empty($startYear) and empty($endYear)){
+     $fullEduInfo = (empty($departName) ? 'No department name entered' : $departName).'---'.(empty($degree) ? 'No degree info entered' : $degree);
+     $eduStatus = "Dates not entered";
+    }
+    else {
       $fullEduInfo = (empty($departName) ? 'No department name entered' : $departName).'---'.(empty($degree) ? 'No degree info entered' : $degree).'---'.(empty($startYear) ? 'No start year entered' : $startYear).'-'.(empty($endYear) ? 'Present' : $endYear);
       if((strpos($fullEduInfo, 'Present') !== false))
         $eduStatus = 'Current Student';
-      else $eduStatus = 'Past Student';
-	  }
+      else 
+        $eduStatus = 'Past Student';
+    }
 	  
-	  $firstName = $jsonRecord['person']['name']['given-names']['value'];
-	  $lastName = $jsonRecord['person']['name']['family-name']['value'];
-	  $fullName = $firstName." ".$lastName;
-	  $fullName = str_replace("'", "", $fullName);
-	  $fullEduInfo = str_replace("'", "", $fullEduInfo);
-	  $fullEmployInfo = str_replace("'", "", $fullEmployInfo);
-	  $id = $jsonRecord['orcid-identifier']['path'];
+    $firstName = $jsonRecord['person']['name']['given-names']['value'];
+    $lastName = $jsonRecord['person']['name']['family-name']['value'];
+    $fullName = $firstName." ".$lastName;
+    $fullName = str_replace("'", "", $fullName);
+    $fullEduInfo = str_replace("'", "", $fullEduInfo);
+    $fullEmployInfo = str_replace("'", "", $fullEmployInfo);
+    $id = $jsonRecord['orcid-identifier']['path'];
 	  
-	  $query = "INSERT INTO dbo.UT ([name], orcid_id, education, employment, education_status, employment_status)
-				VALUES ('$fullName', '$id', '$fullEduInfo', '$fullEmployInfo', '$eduStatus', '$empStatus');";
+    $query = "INSERT INTO dbo.UT ([name], orcid_id, education, employment, education_status, employment_status)
+	      VALUES ('$fullName', '$id', '$fullEduInfo', '$fullEmployInfo', '$eduStatus', '$empStatus');";
 				
-	  $execute = sqlsrv_query($conn, $query);
-	  if(!$execute){
+    $execute = sqlsrv_query($conn, $query);
+    if(!$execute){
       error_log("Couldn't run SQL query in pass ".$i."\n");
       error_log($query);
-	  }
+    }
   }
+
   sqlsrv_close($conn);
   curl_multi_close($multiCurl);
   curl_close($queryCurl);
