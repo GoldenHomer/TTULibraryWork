@@ -36,15 +36,13 @@
   // Image file type/extension, size and dimensions are verified client-side, so no need to do it server-side unless necessary.
   // 4 is no file selected error code
   if($_FILES['imageToUpload']['error'][0] != 4){
-	
-	
-	  // Can't submit metadata about object without pics of object
-	  $sql = "INSERT INTO dbo.Objects (collectionID, itemTitle, itemDescription, itemRights, itemExtent, dateCreated, itemPartNumber, itemTotalParts, itemWidth, itemDepth, itemCreator, itemSubject1, itemSubject2, itemSubject3, previousPrints, requestedFor, oclc, objectID, itemLength, modMaterial, supMaterial, buildTime, cost)
-		        VALUES ('$collectionID', '$itemTitle', '$itemDescription', '$itemRights', '$itemExtent', '$dateCreated', '$itemIsPartOf', '$totalParts', '$itemWidth', '$itemDepth', '$itemCreator', '$itemSubject', '$itemSubject2', '$itemSubject3','$previousPrints', '$requestedFor', '$oclc', '$objectID', '$length', '$modMaterial', '$supMaterial', '$buildTime', '$cost');";
+    // Can't submit metadata about object without pics of object
+    $sql = "INSERT INTO dbo.Objects (collectionID, itemTitle, itemDescription, itemRights, itemExtent, dateCreated, itemPartNumber, itemTotalParts, itemWidth, itemDepth, itemCreator, itemSubject1, itemSubject2, itemSubject3, previousPrints, requestedFor, oclc, objectID, itemLength, modMaterial, supMaterial, buildTime, cost)
+    	    VALUES ('$collectionID', '$itemTitle', '$itemDescription', '$itemRights', '$itemExtent', '$dateCreated', '$itemIsPartOf', '$totalParts', '$itemWidth', '$itemDepth', '$itemCreator', '$itemSubject', '$itemSubject2', '$itemSubject3','$previousPrints', '$requestedFor', '$oclc', '$objectID', '$length', '$modMaterial', '$supMaterial', '$buildTime', '$cost');";
   
     $sql .= "INSERT INTO dbo.DBEvents (event) VALUES ('$event')";
     $query = sqlsrv_query($conn, $sql);
-    // If there's something wrong with query
+    // If there's something wrong with query, write to error log and stop so images aren't submitted.
     if(!$query){
       error_log("Database error: Metadata could not be submitted to database.\r\n");
       exit();
@@ -65,5 +63,5 @@
     }
   }
   else
-	  error_log("Error: No image(s) of object was selected to upload. Object metadata not submitted.");
+    error_log("Error: No image(s) of object was selected to upload. Object metadata not submitted.");
 ?>
