@@ -61,7 +61,7 @@
     // Keep track of equipment history event
     $now = date('m/j/y h:i:s A');
     $historySQL = "INSERT INTO dbo.equipHistory (username, event, timestamp, AV#, eqID)
-             VALUES ('$eRaiderusername', 'Equipment record was created', '$now', '$AVnum', '$id')";
+             	   VALUES ('$eRaiderusername', 'Equipment record was created', '$now', '$AVnum', '$id')";
 
     $historyQuery = sqlsrv_query($conn, $historySQL);
   }
@@ -78,11 +78,11 @@
     echo("Your inventory could not be submitted as there is an issue with the database. Notify project developer");
     // For our PHP error log
     error_log("Something went wrong with database while being called by processEntry.php.");
-	  exit();
+    exit();
   }
   else {
-	include('../include/header.php');
-	header('refresh:5; url=../index.php');
+    include('../include/header.php');
+    header('refresh:5; url=../index.php');
 	
     echo("<html>
             <head>
