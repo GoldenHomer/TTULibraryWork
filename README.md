@@ -42,3 +42,15 @@ I use tcpdf.org to generate the contract PDF taking the input values from the co
 Something that was unique to this project was adding inventory from an Excel. Useful for adding about 1500 items to the system. Code for this part can be seen [here](processExcelFile.php).
 
 ![LBSI Excel upload](lbsi%20excel.png)
+
+
+### DMS Inventory Application - DataTables implmentation and custom features
+Yes, ANOTHER inventory tracking system! Here you can see DataTables being used in conjunction with Bootstrap styling. Project client requested custom features such as the equipment history and the + buttons that use a AJAX POST method to submit an UPDATE query to a PHP file. Also, the AV# is generated with PHP when the inventory item is first submitted and is unique for all inventory. I'll show this inventory submission form in the next screenshot.
+
+![DMS Inventory](dmsInventory.png)
+
+
+### DMS Inventory Application - Submission Form
+Pretty simple form here. The Equipment Name and Type dropdown options aren't hard coded. They are managed in the 'Add Name' and 'Add Type' links you see in the top navbar. Quantity controls how many items are to be submitted. Code for the form can be seen [here](dmsSubmissionForm.php). Once Submit is clicked, form is processed. The procecssing code is [here](processEntry.php)
+
+![DMS Inventory Form](dmsForm.png)
