@@ -17,7 +17,7 @@
 
         // For the acquired date column, Excel includes hidden time (00:00:00) which isn't needed. So trim the time out.
         $sql = "INSERT INTO dbo.inventory (tag, description, serial, model, manufacturer, building, room, note, acquiredDate, amount)
-              VALUES ('".$row[0]."', '".$row[1]."', '".$row[2]."', '".$row[3]."', '".$row[4]."', '".$row[5]."', '".$row[6]."', '".$row[7]."', '".substr($row[8], 0, 10)."', '".$row[9]."')";
+              	VALUES ('".$row[0]."', '".$row[1]."', '".$row[2]."', '".$row[3]."', '".$row[4]."', '".$row[5]."', '".$row[6]."', '".$row[7]."', '".substr($row[8], 0, 10)."', '".$row[9]."')";
 
           $execute = sqlsrv_query($conn, $sql);
       }
