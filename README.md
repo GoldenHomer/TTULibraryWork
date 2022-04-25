@@ -9,6 +9,11 @@ Instead of Bootstrap 4, I decided to use Semantic UI just to do something differ
 ![Ticketing system I'm working on](ticketing.png)
 
 
+### Revamped ILLiad Document Delivery pages
+One of first tasks I did when I first started in 2015. Used Bootstrap 3 and jQuery UI. I also coded the "Schedule A Pickup" feature which sends an email to Document Delivery staff when faculty member wants to get books or other documents.
+
+![ILLiad baby](illiad.png)
+
 ### TTU Library Study Carrel Reservation submission form
 The application uses getskeleton.com as the UI framework. All the input fields (except Comments) are autofilled with the respective info from TTU's eRaider authentication system. I just remove the sensitive info.
 
@@ -31,3 +36,9 @@ The Contract button brings up a contract modal, which comes from jquerymodal.com
 I use tcpdf.org to generate the contract PDF taking the input values from the contract modal. Code for that can be seen [here](contract.php).
 
 ![Study Carrel Reservation Contract Modal](my%20contract.png)
+
+
+### LBSI Inventory Application - Add Inventory From Excel File
+Something that was unique to this project was adding inventory from an Excel. Useful for adding about 1500 items to the system. Code for this part can be seen [here](processExcelFile.php).
+
+![LBSI Excel upload](lbsi%20excel.png)
