@@ -54,3 +54,15 @@ Yes, ANOTHER inventory tracking system! Here you can see DataTables being used i
 Pretty simple form here. The Equipment Name and Type dropdown options aren't hard coded. They are managed in the 'Add Name' and 'Add Type' links you see in the top navbar. Quantity controls how many items are to be submitted. Code for the form can be seen [here](dmsSubmissionForm.php). Once Submit is clicked, form is processed. The procecssing code is [here](processEntry.php)
 
 ![DMS Inventory Form](dmsForm.png)
+
+
+### SHAPES project
+SHAPES is a 3D-printing project that I collaborated with another programmer. The project allow users to submit metadata and specific images for purpose of printing a 3D object from images. I worked the accounts/authentication/submission part of the project. First image is the registration form.
+
+![SHAPES](shapesRegister.png)
+
+This image is the user submission form. Hardest part of programming this was getting the images uploaded to the SHAPES server to be displayed later on the admin side.
+![SHAPES](shapes1.png)
+
+And here's the admin side of the project. Admins review user submissions and either accept or reject them.
+![SHAPES](review%20submissions.png)
