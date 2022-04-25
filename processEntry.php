@@ -23,6 +23,7 @@
   // $stringToInt and endLoopInt should be integers
   $endLoopInt = $currentCount + (int)$quantity;
   
+  // How the AV# is generated
   for($currentCount; $currentCount < $endLoopInt; $currentCount++){
     if($currentCount < 10)
       $zeros = "0000";
