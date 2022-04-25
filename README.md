@@ -39,7 +39,7 @@ I use tcpdf.org to generate the contract PDF taking the input values from the co
 
 
 ### LBSI Inventory Application - Add Inventory From Excel File
-Uses picocss.com for the styling - figured since it was going to be an extra small web app, give it a small CSS framework. Something that was unique to this project was adding inventory from an Excel. Useful for adding about 1500 items to the system. Code for this part can be seen [here](processExcelFile.php).
+Uses picocss.com for the styling. I figured since it was going to be an extra small web app, I'll give it a small CSS framework. Something that was unique to this project was adding inventory from an Excel. Useful for adding about 1500 items to the system. Code for this part can be seen [here](processExcelFile.php).
 
 ![LBSI Excel upload](lbsi%20excel.png)
 
