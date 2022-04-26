@@ -5,11 +5,11 @@
   header('Access-Control-Allow-Methods: POST');
   /*********** BEGIN GETTING ACCESS TOKEN FROM ORCID USER  ***********/
   $data = array(
-	  'client_id' => '',
-	  'client_secret' => '',
+	  'client_id' => '[REMOVED]',
+	  'client_secret' => '[REMOVED]',
 	  'grant_type' => 'authorization_code',
 	  'code' => $_REQUEST["q"],
-	  'redirect_uri' => '' 
+	  'redirect_uri' => '[REMOVED]' 
   );
  
   $postString = http_build_query($data, '', '&');
