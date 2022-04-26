@@ -68,3 +68,7 @@ The image below is the user submission form. Images are checked client side. Har
 And here's the admin side of the project. Admins review user submissions and either accept or reject them.
 
 ![SHAPES](review%20submissions.png)
+
+
+### cURLing the ORCID API
+[ORCID](https://orcid.org/) is an organization that connects people to their research activity using an ORCID ID. I was tasked with finding Texas Tech and University of Texas at Austin researchers using ORCID's API. I use PHP's cURL library to do this and you can see that code [here](ORCID.php)
