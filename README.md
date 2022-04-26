@@ -61,8 +61,10 @@ SHAPES is a 3D-printing project that I collaborated with another programmer. The
 
 ![SHAPES](shapesRegister.png)
 
-This image is the user submission form. Images are checked client side. Hardest part of programming this was getting the images uploaded to the SHAPES server to be displayed later on the admin side since I or coworkers never done it before. Code for image upload is [here](processSHAPESform.php).
+The image below is the user submission form. Images are checked client side. Hardest part of programming this was getting the images uploaded to the SHAPES server to be displayed later on the admin side since I or coworkers never done it before. Code for image upload is [here](processSHAPESform.php).
+
 ![SHAPES](shapes1.png)
 
 And here's the admin side of the project. Admins review user submissions and either accept or reject them.
+
 ![SHAPES](review%20submissions.png)
