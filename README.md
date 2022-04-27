@@ -72,3 +72,6 @@ And here's the admin side of the project. Admins review user submissions and eit
 
 ### cURLing the ORCID API
 [ORCID](https://orcid.org/) is an organization that connects people to their research activity using an ORCID ID. I was tasked with finding Texas Tech and University of Texas at Austin researchers using ORCID's API. I use PHP's cURL library to do this and you can see that code [here](ORCID.php)
+
+### MetaRaider: A Client-Side Application
+A have a [repo](https://github.com/GoldenHomer/MetaRaider) dedicated just for this project that I independently worked on. It's public facing so you can access and play with it.
