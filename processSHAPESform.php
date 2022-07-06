@@ -27,8 +27,6 @@
   //generate a hexadecimal value for objectID and folder name for images of object.
   $bytes = openssl_random_pseudo_bytes(10);
   $objectID = bin2hex($bytes);
- 
-  $event = "Object was inserted."; // essentially a DB event description, something that happened when object metadata was submitted
   
   require_once("../includes/dbconn.php");
   
@@ -36,15 +34,47 @@
   // Image file type/extension, size and dimensions are verified client-side, so no need to do it server-side unless necessary.
   // 4 is no file selected error code
   if($_FILES['imageToUpload']['error'][0] != 4){
-    // Can't submit metadata about object without pics of object
-    $sql = "INSERT INTO dbo.Objects (collectionID, itemTitle, itemDescription, itemRights, itemExtent, dateCreated, itemPartNumber, itemTotalParts, itemWidth, itemDepth, itemCreator, itemSubject1, itemSubject2, itemSubject3, previousPrints, requestedFor, oclc, objectID, itemLength, modMaterial, supMaterial, buildTime, cost)
-    	    VALUES ('$collectionID', '$itemTitle', '$itemDescription', '$itemRights', '$itemExtent', '$dateCreated', '$itemIsPartOf', '$totalParts', '$itemWidth', '$itemDepth', '$itemCreator', '$itemSubject', '$itemSubject2', '$itemSubject3','$previousPrints', '$requestedFor', '$oclc', '$objectID', '$length', '$modMaterial', '$supMaterial', '$buildTime', '$cost');";
-  
-    $sql .= "INSERT INTO dbo.DBEvents (event) VALUES ('$event')";
-    $query = sqlsrv_query($conn, $sql);
+    // Can't submit metadata about object without pics of object	  
+    $sql = "INSERT INTO dbo.Objects 
+    	   	(collectionID, itemTitle, itemDescription, itemRights, itemExtent, dateCreated, itemPartNumber, itemTotalParts, itemWidth, itemDepth, itemCreator,
+		 itemSubject1, itemSubject2, itemSubject3, previousPrints, requestedFor, oclc, objectID, itemLength, modMaterial, supMaterial, buildTime, cost)
+    	    VALUES 
+	    	(':collectionID', ':itemTitle', ':itemDescription', ':itemRights', ':itemExtent', ':dateCreated', ':itemIsPartOf', ':totalParts', ':itemWidth', ':itemDepth', ':itemCreator',
+		 ':itemSubject', ':itemSubject2', ':itemSubject3',':previousPrints', ':requestedFor', ':oclc', ':objectID', ':length', ':modMaterial', ':supMaterial', ':buildTime', ':cost');"
+	    
+    $stmt = $pdo->prepare($sql);
+    $sql->execute([
+      ':collectionID' => $collectionID,
+      ':itemTitle' => $itemTitle,
+      ':itemDescription' => $itemDescription,
+      ':itemRights' => $itemRights,
+      ':itemExtent' => $itemExtent,
+      ':dateCreated' => $dateCreated,
+      ':itemIsPartOf' => $itemIsPartOf,
+      ':totalParts' => $totalParts,
+      ':itemWidth' => $itemWidth,
+      ':itemDepth' => $itemDepth,
+      ':itemCreator' => $itemCreator,
+      ':itemSubject' => $itemSubject,
+      ':itemSubject2' => $itemSubject2,
+      ':itemSubject3' => $itemSubject3,
+      ':previousPrints' => $previousPrints,
+      ':requestedFor' => $requestedFor,
+      ':oclc' => $oclc,
+      ':objectID' => $objectID,
+      ':length' => $length,
+      ':modMaterial' => $modMaterial,
+      ':supMaterial' => $supMaterial,
+      ':buildTime' => $buildTime,
+      ':cost' => $cost
+    ]);
+	  
+	  
+    $eventSQL = "INSERT INTO dbo.DBEvents (event) VALUES ('Object was inserted.')";
+    $query = sqlsrv_query($conn, $eventSQL);
     // If there's something wrong with query, write to error log and stop so images aren't submitted.
     if(!$query){
-      error_log("Database error: Metadata could not be submitted to database.\r\n");
+      error_log("Database error: Object event could not be written to database.\r\n");
       exit();
     }
     
