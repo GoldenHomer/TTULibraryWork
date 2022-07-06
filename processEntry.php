@@ -14,7 +14,7 @@
   $columnName = strtolower($type)."Count";
   
   // $itemType used to get the current count based on type submitted
-  $countQuery = "SELECT ".$columnName." FROM dbo.typeCounts";
+  $countQuery = "SELECT $columnName FROM dbo.typeCounts";
   $countResource = sqlsrv_query($conn, $countQuery);
 
   // $currentCount is an integer
@@ -23,43 +23,49 @@
   // $stringToInt and endLoopInt should be integers
   $endLoopInt = $currentCount + (int)$quantity;
   
-  // How the AV# is generated, no longer necessary as AV# can be edited client side
+  // Unique AV# is generated, no longer necessary as AV# can be edited client side
   for($currentCount; $currentCount < $endLoopInt; $currentCount++){
     // pad left side of current count string with zeros as necessary to generate an ID such as CAM00007 or CAM12345
     $zeros = str_pad((string)$currentCount, 5, "0", STR_PAD_LEFT);
 
     $AVnum = $type . $zeros;
+    
+    $query = "INSERT INTO dbo.entries (name, type, AV#, price)
+                  VALUES (:name, :type, :AVnum, :price)"; 
+	 
+    $stmt = $pdo->prepare($query);
+    $stmt->execute([
+	':name' => $name,
+   	':type' => $type,
+	':AVnum' => $AVnum,
+	':price' => $price
+    ]);
 
-    $insertSQL = "INSERT INTO dbo.entries (name, type, AV#, price)
-                  VALUES ('$name', '$type', '$AVnum', '$price')";
-
-    $entryQuery = sqlsrv_query($conn, $insertSQL);
 
     // Need to get equipment's unique ID to insert into equipment history table
-    // using the AV#, assuming the AV is unique.
-    $getSQL = "SELECT id FROM dbo.entries WHERE AV#='$AVnum'";
+    $sql = $pdo->prepare("SELECT id FROM dbo.entries WHERE AV# = :AVnum");
+    $sql->execute([':AVnum' => $AVnum ]);    
 
-    $getQuery = sqlsrv_query($conn, $getSQL);
-    if($getQuery === false) die( print_r( sqlsrv_errors(), true));
-
-    // Make the first (and in this case, only) record of the query return result available for reading.
-    if(sqlsrv_fetch( $getQuery ) === false)
-      die( print_r( sqlsrv_errors(), true));
-
-    $id = sqlsrv_get_field($getQuery, 0);
-
-
+    // Make the first (and only) row of the query result available for reading.
+    if($sql->rowCount()) {
+	while($row = $sql->fetch(PDO::FETCH_ASSOC)) {
+	    $id = $row['id'];
+	}
+    }
 
     // Keep track of equipment history event
     $now = date('m/j/y h:i:s A');
-    $historySQL = "INSERT INTO dbo.equipHistory (username, event, timestamp, AV#, eqID)
-             	   VALUES ('$eRaiderusername', 'Equipment record was created', '$now', '$AVnum', '$id')";
-
-    $historyQuery = sqlsrv_query($conn, $historySQL);
+    
+    $historyQuery = "INSERT INTO dbo.equipHistory (username, event, timestamp, AV#, eqID)
+             	     VALUES (':eraider', 'Equipment record was created', '$now', ':AVnum', '$id')";
+    $sql->execute([
+    	':eraider' => $eRaiderusername,
+	':AVnum' => $AVnum
+    ]);
   }
   
   // this SQL query doesn't need the WHERE clause as there should only be one record in dbo.typeCounts
-  $updateCount = "UPDATE dbo.typeCounts SET ".$columnName."=".$currentCount;
+  $updateCount = "UPDATE dbo.typeCounts SET $columnName = $currentCount";
   $updateQuery = sqlsrv_query($conn, $updateCount);
   
   sqlsrv_close($conn);
