@@ -23,20 +23,12 @@
   // $stringToInt and endLoopInt should be integers
   $endLoopInt = $currentCount + (int)$quantity;
   
-  // How the AV# is generated
+  // How the AV# is generated, no longer necessary as AV# can be edited client side
   for($currentCount; $currentCount < $endLoopInt; $currentCount++){
-    if($currentCount < 10)
-      $zeros = "0000";
-    elseif(10 <= $currentCount && $currentCount < 100)
-      $zeros = "000";
-    elseif(100 <= $currentCount && $currentCount < 1000)
-      $zeros = "00";
-    elseif(1000 <= $currentCount && $currentCount < 10000)
-      $zeros = "0";
-    elseif(10000 <= $currentCount)
-      $zeros = "";
+    // pad left side of current count string with zeros as necessary to generate an ID such as CAM00007 or CAM12345
+    $zeros = str_pad((string)$currentCount, 5, "0", STR_PAD_LEFT);
 
-    $AVnum = $type.$zeros.(string)$currentCount;
+    $AVnum = $type . $zeros;
 
     $insertSQL = "INSERT INTO dbo.entries (name, type, AV#, price)
                   VALUES ('$name', '$type', '$AVnum', '$price')";
