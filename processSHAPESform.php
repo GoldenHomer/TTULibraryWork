@@ -72,7 +72,7 @@
 	  
     $eventSQL = "INSERT INTO dbo.DBEvents (event) VALUES ('Object was inserted.')";
     $query = sqlsrv_query($conn, $eventSQL);
-    // If there's something wrong with query, write to error log and stop so images aren't submitted.
+    // If there's something wrong with the event query, write to error log but don't stop PHP execution since the event message isn't critical
     if(!$query)
       error_log("Database error: Object event could not be written to database.\r\n");
     
