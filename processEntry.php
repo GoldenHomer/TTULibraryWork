@@ -31,24 +31,21 @@
     $AVnum = $type . $zeros;
     
     $query = "INSERT INTO dbo.entries (name, type, AV#, price)
-                  VALUES (:name, :type, :AVnum, :price)"; 
-	 
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([
-	':name' => $name,
-   	':type' => $type,
-	':AVnum' => $AVnum,
-	':price' => $price
-    ]);
+                  VALUES (?, ?, ?, ?)";
+	  
+    $params = array(&$name, &$type, &$AVnum, &$price);
+    $stmt = sqlsrv_prepare($conn, $query, $params);
+    sqlsrv_execute($stmt);
 
 
     // Need to get equipment's unique ID to insert into equipment history table
-    $sql = $pdo->prepare("SELECT id FROM dbo.entries WHERE AV# = :AVnum");
-    $sql->execute([':AVnum' => $AVnum ]);    
+    $selectQuery = "SELECT id FROM dbo.entries WHERE AV# = ?";
+    $sql = sqlsrv_prepare( $conn, $selectQuery, array(&$AVnum) );
+    $result = sqlsrv_execute($sql);  
 
     // Make the first (and only) row of the query result available for reading.
-    if($sql->rowCount()) {
-	while($row = $sql->fetch(PDO::FETCH_ASSOC)) {
+    if( sqlsrv_has_rows($result) ) {
+	while( $row = sqlsrv_fetch_array($result) ) {
 	    $id = $row['id'];
 	}
     }
@@ -57,16 +54,16 @@
     $now = date('m/j/y h:i:s A');
     
     $historyQuery = "INSERT INTO dbo.equipHistory (username, event, timestamp, AV#, eqID)
-             	     VALUES (':eraider', 'Equipment record was created', '$now', ':AVnum', '$id')";
-    $sql->execute([
-    	':eraider' => $eRaiderusername,
-	':AVnum' => $AVnum
-    ]);
+             	     VALUES (?, ?, ?, ?, ?)";
+	  
+    $params2 = array(&$eRaiderusername, 'Equipment record was created', &$now, &$AVnum, &$id);
+    $sql2 = sqlsrv_prepare( $conn, $historyQuery, $params2 );
+    sqlsrv_execute($stmt);
   }
   
   // this SQL query doesn't need the WHERE clause as there should only be one record in dbo.typeCounts
-  $updateCount = "UPDATE dbo.typeCounts SET $columnName = $currentCount";
-  $updateQuery = sqlsrv_query($conn, $updateCount);
+  $updateSQL = "UPDATE dbo.typeCounts SET $columnName = ?";
+  $updateQuery = sqlsrv_query( $conn, $updateSQL, array(&$currentCount) );
   
   sqlsrv_close($conn);
   
