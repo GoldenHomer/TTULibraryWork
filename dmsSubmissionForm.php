@@ -43,11 +43,14 @@
                 //Start display equipment names from dbo.equipmentNames
                 $query = "SELECT name FROM dbo.equipmentNames";
                 $result = sqlsrv_query($conn, $query);
-                if(!$result) error_log("Cannot get equipment names. Check dbconn.php or dbo.equipmentNames");
+                if(!$result) {
+                    trigger_error("Couldn't get equipment names because of database error. Notify developers.");
+                    error_log("Cannot get equipment names. Check dbconn.php or equipment names table");
+                }
 
                 if(sqlsrv_has_rows($result)){
                     while($row = sqlsrv_fetch_array($result)){
-                      echo "<option value='".$row['name']."'>".$row['name']."</option>";
+                        echo "<option value='".$row['name']."'>".$row['name']."</option>";
                     }
                 }
                 sqlsrv_close($conn);
@@ -66,7 +69,10 @@
               //Start display equipment names from dbo.equipmentNames
               $query = "SELECT * FROM dbo.equipmentTypes";
               $result = sqlsrv_query($conn, $query);
-              if(!$result) error_log("Cannot get equipment types. Check dbconn.php or dbo.equipmentTypes");
+              if(!$result) {
+                trigger_error("Couldn't get equipment types because of database error. Notify developers.");
+                error_log("Cannot get equipment types. Check dbconn.php or equipment types table");
+              }
 
               if(sqlsrv_has_rows($result)){
                 while($row = sqlsrv_fetch_array($result)){
