@@ -39,39 +39,39 @@
     	   	(collectionID, itemTitle, itemDescription, itemRights, itemExtent, dateCreated, itemPartNumber, itemTotalParts, itemWidth, itemDepth, itemCreator,
 		 itemSubject1, itemSubject2, itemSubject3, previousPrints, requestedFor, oclc, objectID, itemLength, modMaterial, supMaterial, buildTime, cost)
     	    VALUES 
-	    	(':collectionID', ':itemTitle', ':itemDescription', ':itemRights', ':itemExtent', ':dateCreated', ':itemIsPartOf', ':totalParts', ':itemWidth', ':itemDepth', ':itemCreator',
-		 ':itemSubject', ':itemSubject2', ':itemSubject3',':previousPrints', ':requestedFor', ':oclc', ':objectID', ':length', ':modMaterial', ':supMaterial', ':buildTime', ':cost');"
+	    	(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+		 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	    
-    $stmt = $pdo->prepare($sql);
-    $sql->execute([
-      ':collectionID' => $collectionID,
-      ':itemTitle' => $itemTitle,
-      ':itemDescription' => $itemDescription,
-      ':itemRights' => $itemRights,
-      ':itemExtent' => $itemExtent,
-      ':dateCreated' => $dateCreated,
-      ':itemIsPartOf' => $itemIsPartOf,
-      ':totalParts' => $totalParts,
-      ':itemWidth' => $itemWidth,
-      ':itemDepth' => $itemDepth,
-      ':itemCreator' => $itemCreator,
-      ':itemSubject' => $itemSubject,
-      ':itemSubject2' => $itemSubject2,
-      ':itemSubject3' => $itemSubject3,
-      ':previousPrints' => $previousPrints,
-      ':requestedFor' => $requestedFor,
-      ':oclc' => $oclc,
-      ':objectID' => $objectID,
-      ':length' => $length,
-      ':modMaterial' => $modMaterial,
-      ':supMaterial' => $supMaterial,
-      ':buildTime' => $buildTime,
-      ':cost' => $cost
-    ]);
-	  
-	  
-    $eventSQL = "INSERT INTO dbo.DBEvents (event) VALUES ('Object was inserted.')";
-    $query = sqlsrv_query($conn, $eventSQL);
+    $params = array(&$collectionID,
+      		    &$itemTitle,
+      		    &$itemDescription,
+      		    &$itemRights,
+       		    &$itemExtent,
+      		    &$dateCreated,
+      		    &$itemIsPartOf,
+      		    &$totalParts,
+      		    &$itemWidth,
+      		    &$itemDepth,
+      		    &$itemCreator,
+      		    &$itemSubject,
+      		    &$itemSubject2,
+      		    &$itemSubject3,
+     		    &$previousPrints,
+      		    &$requestedFor,
+      		    &$oclc,
+      		    &$objectID,
+      		    &$length,
+      		    &$modMaterial,
+      		    &$supMaterial,
+      		    &$buildTime,
+      		    &$cost);
+    
+    $stmt = sqlsrv_prepare($conn, $sql, $params);
+    sqlsrv_execute($stmt);
+	    
+	    
+    $eventSQL = "INSERT INTO dbo.DBEvents (event) VALUES (?)";
+    $query = sqlsrv_query( $conn, $eventSQL, array('Object was inserted.') );
     // If there's something wrong with the event query, write to error log but don't stop PHP execution since the event message isn't critical
     if(!$query)
       error_log("Database error: Object event could not be written to database.\r\n");
