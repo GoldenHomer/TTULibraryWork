@@ -40,7 +40,7 @@
 		 itemSubject1, itemSubject2, itemSubject3, previousPrints, requestedFor, oclc, objectID, itemLength, modMaterial, supMaterial, buildTime, cost)
     	    VALUES 
 	    	(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-		 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+		 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	    
     $params = array(&$collectionID,
       		    &$itemTitle,
