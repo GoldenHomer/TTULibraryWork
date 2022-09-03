@@ -33,14 +33,14 @@
     $query = "INSERT INTO dbo.entries (name, type, AV#, price)
                   VALUES (?, ?, ?, ?)";
 	  
-    $params = array(&$name, &$type, &$AVnum, &$price);
+    $params = array($name, $type, $AVnum, $price);
     $stmt = sqlsrv_prepare($conn, $query, $params);
     sqlsrv_execute($stmt);
 
 
     // Need to get equipment's unique ID to insert into equipment history table
     $selectQuery = "SELECT id FROM dbo.entries WHERE AV# = ?";
-    $sql = sqlsrv_prepare( $conn, $selectQuery, array(&$AVnum) );
+    $sql = sqlsrv_prepare( $conn, $selectQuery, array($AVnum) );
     $result = sqlsrv_execute($sql);  
 
     // Make the first (and only) row of the query result available for reading.
@@ -56,14 +56,14 @@
     $historyQuery = "INSERT INTO dbo.equipHistory (username, event, timestamp, AV#, eqID)
              	     VALUES (?, ?, ?, ?, ?)";
 	  
-    $params2 = array(&$eRaiderusername, 'Equipment record was created', &$now, &$AVnum, &$id);
+    $params2 = array($eRaiderusername, 'Equipment record was created', $now, $AVnum, $id);
     $sql2 = sqlsrv_prepare( $conn, $historyQuery, $params2 );
     sqlsrv_execute($stmt);
   }
   
   // this SQL query doesn't need the WHERE clause as there should only be one record in dbo.typeCounts
   $updateSQL = "UPDATE dbo.typeCounts SET $columnName = ?";
-  $updateQuery = sqlsrv_query( $conn, $updateSQL, array(&$currentCount) );
+  $updateQuery = sqlsrv_query( $conn, $updateSQL, array($currentCount) );
   
   sqlsrv_close($conn);
   
