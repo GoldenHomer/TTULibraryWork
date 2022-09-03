@@ -68,10 +68,9 @@
     
     $stmt = sqlsrv_query($conn, $sql, $params);
 	  
-    if(!$stmt) {
-      trigger_error("Could not insert to database. Check table and credentials.");
-      exit;
-    }
+    // E_USER_ERROR is an error type that halts PHP execution, which is needed here. Will also log error.
+    if(!$stmt)
+      trigger_error("Could not insert to database. Check table and credentials.", E_USER_ERROR);
 	    
     $eventSQL = "INSERT INTO dbo.DBEvents (event) VALUES (?)";
     $query = sqlsrv_query( $conn, $eventSQL, array('Object was inserted.') );
