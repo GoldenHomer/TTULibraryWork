@@ -66,9 +66,12 @@
       		    $buildTime,
       		    $cost);
     
-    $stmt = sqlsrv_prepare($conn, $sql, $params);
-    sqlsrv_execute($stmt);
-	    
+    $stmt = sqlsrv_query($conn, $sql, $params);
+	  
+    if(!$stmt) {
+      trigger_error("Could not insert to database. Check table and credentials.");
+      exit;
+    }
 	    
     $eventSQL = "INSERT INTO dbo.DBEvents (event) VALUES (?)";
     $query = sqlsrv_query( $conn, $eventSQL, array('Object was inserted.') );
