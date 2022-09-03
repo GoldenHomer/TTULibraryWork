@@ -34,14 +34,12 @@
                   VALUES (?, ?, ?, ?)";
 	  
     $params = array($name, $type, $AVnum, $price);
-    $stmt = sqlsrv_prepare($conn, $query, $params);
-    sqlsrv_execute($stmt);
+    $stmt = sqlsrv_query($conn, $query, $params);
 
 
     // Need to get equipment's unique ID to insert into equipment history table
     $selectQuery = "SELECT id FROM dbo.entries WHERE AV# = ?";
-    $sql = sqlsrv_prepare( $conn, $selectQuery, array($AVnum) );
-    $result = sqlsrv_execute($sql);  
+    $sql = sqlsrv_query( $conn, $selectQuery, array($AVnum) );
 
     // Make the first (and only) row of the query result available for reading.
     if( sqlsrv_has_rows($result) ) {
@@ -57,8 +55,7 @@
              	     VALUES (?, ?, ?, ?, ?)";
 	  
     $params2 = array($eRaiderusername, 'Equipment record was created', $now, $AVnum, $id);
-    $sql2 = sqlsrv_prepare( $conn, $historyQuery, $params2 );
-    sqlsrv_execute($stmt);
+    $sql2 = sqlsrv_query( $conn, $historyQuery, $params2 );
   }
   
   // this SQL query doesn't need the WHERE clause as there should only be one record in dbo.typeCounts
